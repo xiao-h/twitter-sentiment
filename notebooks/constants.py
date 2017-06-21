@@ -1,0 +1,48 @@
+TAG_INDUSTRY_MAP = {
+    'jpm': 'financial',
+    'san': 'pharmaceuticals',
+    'dia': 'consumer_goods',
+    'cre': 'financial',
+    'toy': 'auto',
+    'for': 'auto',
+    'eni': 'oil_gas',
+    'wel': 'financial',
+    'nat': 'financial',
+    'nes': 'consumer_goods',
+    'pan': 'consumer_goods',
+    'hsb': 'financial',
+    'nik': 'consumer_goods',
+    'ubs': 'financial',
+    'tdb': 'financial',
+    'cit': 'financial',
+    'dai': 'auto',
+    'bmw': 'auto',
+    'mer': 'pharmaceuticals',
+    'joh': 'pharmaceuticals',
+    'ibm': 'computer_services',
+    'deu': 'financial',
+    'coc': 'consumer_goods',
+    'she': 'oil_gas',
+    'bpw': 'oil_gas',
+    'icb': 'financial',
+    'uni': 'consumer_goods',
+    'rbc': 'financial',
+    'exx': 'oil_gas',
+}
+
+MONS = [
+    'JAN',
+    'FEB',
+    'MAR',
+    'APR',
+    'MAY',
+    'JUN',
+    'JUL',
+    'AUG',
+    'SEP',
+    'OCT',
+    'NOV',
+    'DEC'
+]
+
+DAYS = [str(x).zfill(2) for x in list(range(1, 32, 1))]
