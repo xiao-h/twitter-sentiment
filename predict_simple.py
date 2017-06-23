@@ -29,12 +29,7 @@ tf.flags.DEFINE_string("checkpoint_file",
 
 tf.flags.DEFINE_string(
     "validation_data_fname",
-    "./data/preprocessing/full-trainX.npy",
-    "The numpy dump of the validation data for Kaggle. Should ideally be"
-    " preprocessed the same way as the training data.")
-tf.flags.DEFINE_string(
-    "y_data_fname",
-    "./data/preprocessing/full-trainY.npy",
+    "./data/preprocessing/validateX_simple.npy",
     "The numpy dump of the validation data for Kaggle. Should ideally be"
     " preprocessed the same way as the training data.")
 tf.flags.DEFINE_string(
@@ -47,7 +42,6 @@ tf.flags.DEFINE_string(
     "output/predictions",
     "The graph node name of the prediction computation. Hint: if you forget to"
     " name it, it's probably called 'Softmax' or 'output/Softmax'.")
-tf.flags.DEFINE_float("dev_ratio", 0.01, "Percentage of data used for validation. Between 0 and 1. (default: 0.1)")
 FLAGS = tf.flags.FLAGS
 FLAGS._parse_flags()
 
@@ -57,45 +51,15 @@ if FLAGS.checkpoint_file is None:
 
 validation_data_fname = FLAGS.validation_data_fname
 print("Validation data file: {0}".format(validation_data_fname))
-validation_data_full = np.load(validation_data_fname)
-y_data_fname = FLAGS.y_data_fname
-y_data_full = np.load(y_data_fname)
+validation_data = np.load(validation_data_fname)
 
-# Randomly shuffle data
-import datetime
-random_seed = datetime.datetime.now().microsecond
-print("Using random seed: {0}".format(random_seed))
-np.random.seed(random_seed)
-n_data = len(y_data_full)
-shuffle_indices = np.random.permutation(np.arange(n_data))
-# shuffle_indices = list(range(0, 8000))
-# shuffle_indices.extend(list(range(800001,808001)))
-# shuffle_indices = np.asarray(shuffle_indices)
-
-x_shuffled = validation_data_full[shuffle_indices]
-y_shuffled = y_data_full[shuffle_indices]
-
-# validation_data = x_shuffled
-# y_data = y_shuffled
-
-# Train/dev split
-n_dev = int(FLAGS.dev_ratio * n_data)
-n_train = n_data - n_dev
-x_train, x_dev = x_shuffled[:n_train], x_shuffled[n_train:]
-y_train, y_dev = y_shuffled[:n_train], y_shuffled[n_train:]
-
-validation_data = x_dev
-y_data = y_dev
-
-assert len(x_train) + len(x_dev) == n_data
-assert len(y_train) + len(y_dev) == n_data
 
 checkpoint_file = FLAGS.checkpoint_file
 timestamp = int(time.time())
 filename = "./data/output/prediction_lstm_{0}.csv".format(timestamp)
 meta_filename = "{0}.meta".format(filename)
 print("Predicting using checkpoint file [{0}].".format(checkpoint_file))
-# print("Will write predictions to file [{0}].".format(filename))
+print("Will write predictions to file [{0}].".format(filename))
 
 print("Validation data shape: {0}".format(validation_data.shape))
 
@@ -134,37 +98,23 @@ with graph.as_default():
             all_predictions.append((id + 1, prediction))
 
         print("Prediction done.")
-        # print("Writing predictions to file...")
-        # submission = open(filename, 'w+')
-        # print('Id,Prediction', file=submission)
 
         scores = np.asarray([pred[0] for id, pred in all_predictions])
-        n = len(all_predictions)
-
-        isort = np.argsort(scores) # from the smallest
-        #np.save('isort', isort)
-        y_test = []
-        for i in range(0, y_data.shape[0]):
-            y_test.append(1) if np.array_equal(y_data[i], np.array([0 ,1])) else y_test.append(0)
-        #np.save('y_test', y_test)
-        y_test = np.array(y_test)[isort]
-
-#        y_test = np.load('y_test.npy')
-#        y_test = y_test[isort]
-
+        isort = np.argsort(scores)
+        npos = 182
+        n = 359
         tpr = np.empty((n,), dtype='float32')
-        npos = sum(y_test)
         for i in range(1, n+1):
-            tpr[i-1] = sum(y_test[:i])/npos
+            tpr[i-1] = sum(isort[:i] > 176)/npos
         rpp = np.arange(1/n, 1+1/n, 1/n)
 
         plt.figure()
         plt.plot(rpp, tpr)
-        # plt.plot(fpr, tpr)
-        # plt.plot(pred_tfidf[:,0], pred_tfidf[:,1])
         plt.grid(True)
         plt.show()
+ 
 
+#         print(all_predictions)
         sys.exit(0)
 
 

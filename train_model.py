@@ -37,7 +37,7 @@ tf.flags.DEFINE_integer("num_filters", 128, "Number of filters per filter size (
 # LSTM-specific
 tf.flags.DEFINE_integer("lstm_hidden_size", 128, "Size of the hidden LSTM"
                                                  " layer. Default = 128")
-tf.flags.DEFINE_integer("lstm_hidden_layers", 2, "Number of hidden LSTM"
+tf.flags.DEFINE_integer("lstm_hidden_layers", 1, "Number of hidden LSTM"
                                                  " layers.")
 
 # Training parameters
@@ -152,9 +152,7 @@ with tf.Graph().as_default():
     sess = tf.Session(config=session_conf)
     embedding_dim = embeddings.shape[1]
     with sess.as_default():
-        # TODO(andrei): Warn on all unused flags (e.g. set CNN options when
-        # using an LSTM).
-        if FLAGS.lstm:
+            if FLAGS.lstm:
             print("\nUsing LSTM.")
             model = TextLSTM(sequence_length=x_train.shape[1],
                              vocab_size=len(vocabulary),
@@ -182,9 +180,7 @@ with tf.Graph().as_default():
 
         # If enabled, we apply gradient clipping, in order to deal with the
         # exploding gradient problem common when training LSTMs.
-        # TODO(andrei): Gradient magnitude tracing to see effectiveness of
-        # clipping.
-        if FLAGS.clip_gradients:
+            if FLAGS.clip_gradients:
             print("Will clip gradients |.| < {0}"
                   .format(FLAGS.clip_gradient_value))
 
@@ -199,7 +195,7 @@ with tf.Graph().as_default():
                 if gradient is None:
                     # Workaround for a particular case where a variable's
                     # gradient was returned 'None' by 'compute_gradients'.
-                    # TODO(andrei): Investigate whether this matters.
+                    
                     return None
                 return tf.clip_by_value(gradient,
                                         -FLAGS.clip_gradient_value,
@@ -236,7 +232,7 @@ with tf.Graph().as_default():
         print("Meta-information will be written to {}.".format(meta_fname))
 
         with open(meta_fname, 'w') as meta_file:
-            # TODO(andrei): Add whatever additional information is necessary.
+           
             meta_file.write("Meta-information\n")
             meta_file.write("Label: {0}\n".format(FLAGS.label))
             if FLAGS.lstm:
@@ -370,7 +366,7 @@ with tf.Graph().as_default():
             if current_step is None:
                 print("No checkpointing to do.")
             else:
-                # TODO(andrei): Consider also evaluating here.
+                
                 print("Training interrupted. Performing final checkpoint.")
                 print("Press C-c again to forcefully interrupt this.")
                 path = saver.save(sess, checkpoint_prefix, global_step=current_step)
