@@ -10,17 +10,14 @@ Those patterns are then handled individually, eg:
 This has to run before the vocabulary is build!
 """
 
-FULL_POS_ORIG_FILE_NAME = "../data/train/train_pos_full_orig.txt"
-FULL_NEG_ORIG_FILE_NAME = "../data/train/train_neg_full_orig.txt"
+#FULL_POS_ORIG_FILE_NAME = "../data/train/train_pos_full_orig.txt"
+#FULL_NEG_ORIG_FILE_NAME = "../data/train/train_neg_full_orig.txt"
 TEST_ORIG_FILE_NAME = "../data/test/test_data_orig.txt"
 
-FULL_POS_FILE_NAME = "../data/train/train_pos_full.txt"
-FULL_NEG_FILE_NAME = "../data/train/train_neg_full.txt"
+#FULL_POS_FILE_NAME = "../data/train/train_pos_full.txt"
+#FULL_NEG_FILE_NAME = "../data/train/train_neg_full.txt"
 TEST_FILE_NAME = "../data/test/test_data.txt"
 
-# TODO(Bernhard): look for a emoticon list on the web
-# TODO(Bernhard): look weather those emoticons survive the nex preprocessing step
-#                 or if we should replace them by tags like <positive_emoticon> and <neg...
 
 #  handle specific exceptions. like <3 we don't want it to be converted to <num>
 # EMOTICONS = ["<3", ":3"]
@@ -37,16 +34,18 @@ def main():
     # adv1_pattern = re.compile(r"\([^\(\)]*\.\.\.\s<url>$")
     # adv2_pattern = re.compile(r"\([^\(\)]*\s<url>$")
 
-    for fin, fout in [(FULL_POS_ORIG_FILE_NAME, FULL_POS_FILE_NAME),
-                        (FULL_NEG_ORIG_FILE_NAME, FULL_NEG_FILE_NAME),
-                        (TEST_ORIG_FILE_NAME, TEST_FILE_NAME)]:
+    for fin, fout in [ (TEST_ORIG_FILE_NAME, TEST_FILE_NAME)]:
+
+			#[(FULL_POS_ORIG_FILE_NAME, FULL_POS_FILE_NAME),
+                     #   (FULL_NEG_ORIG_FILE_NAME, FULL_NEG_FILE_NAME),
+                       # (TEST_ORIG_FILE_NAME, TEST_FILE_NAME)]:
 
         with open(fin, 'r') as f, open(fout, 'w') as out:
             print("start processing file:\t\t"+fin)
             line_cnt = 0
             for line in f:
                 line_cnt += 1
-                if line_cnt % 100 == 0:
+                if line_cnt % 100000 == 0:
                     print(line_cnt)
 
                 line = preprocessTweets(line)

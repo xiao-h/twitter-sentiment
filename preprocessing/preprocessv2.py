@@ -12,11 +12,13 @@ NEG_FILE_NAME = "../data/train/train_neg.txt"
 VALID_FILE_NAME = "../data/test/test_data.txt"
 VOCAB_FILE_NAME = "../data/preprocessing/vocab_cut.txt"
 # WORD2VEC_FILE_NAME = "../../glove.6B.300d.gensim.txt"
-WORD2VEC_FILE_NAME = "../../glove.6B.50d.txt"
+# WORD2VEC_FILE_NAME = "../../glove.6B.50d.gensim.txt"
+WORD2VEC_FILE_NAME = "../../glove.twitter.27B.50d.gensim.txt"
+
 MAPPINGS_FOLDER = "../data/preprocessing/mappings/"
 
-VALID_SIZE = 46306
-FULL_TRAIN_SIZE = 46306
+VALID_SIZE = 1600000
+FULL_TRAIN_SIZE = 1600000
 SMALL_TRAIN_SIZE = 600
 
 
@@ -244,7 +246,7 @@ def main(argv):
         usage()
         sys.exit(2)
     for opt, arg in opts:
-        # TODO(andrei): Warn when not using full subset!
+        
         if opt in ("-f", "--full"):
             train_pos_file = FULL_POS_FILE_NAME
             train_neg_file = FULL_NEG_FILE_NAME

@@ -15,23 +15,19 @@ and try to map it to word2vec pretrained words.
 
 VOCAB_FILE_NAME = "../data/preprocessing/vocab_cut.txt"
 
-# TODO(andrei): Experiment with locally-trained embeddings.
+
 # WORD2VEC_FILE_NAME = "../../glove.6B.300d.gensim.txt"
-WORD2VEC_FILE_NAME = "../../glove.6B.50d.txt"
+# WORD2VEC_FILE_NAME = "../../glove.6B.50d.gensim.txt"
+WORD2VEC_FILE_NAME = "../../glove.twitter.27B.50d.gensim.txt"
+
 MAPPINGS_FILE_NAME = "../data/preprocessing/mappings/mappings.pkl"
 MAPPINGS_FOLDER = "../data/preprocessing/mappings/"
 
 # Original values:
-HIGH_FREQUENCY = 10*2
-LOW_FREQUENCY = 4*2    # TODO experiment with different values. i believe we should increase it
-HASH_TAG_FREQ_BOUND = 80*2
+HIGH_FREQUENCY = 10
+LOW_FREQUENCY = 4*2    
+HASH_TAG_FREQ_BOUND = 80
 MIN_SPELL_CORRECTION_LENGTH = 5
-
-# Optimal values on Kaggle, based on Nikos's experiments.
-# HIGH_FREQUENCY = 20
-# LOW_FREQUENCY = 4    # TODO experiment with different values. i believe we should increase it
-# HASH_TAG_FREQ_BOUND = 10
-# MIN_SPELL_CORRECTION_LENGTH = 5
 
 if not os.path.exists(MAPPINGS_FOLDER):
     os.makedirs(MAPPINGS_FOLDER)
@@ -107,7 +103,7 @@ def spell_correction2(word):
     # if the word is too small do not try to find a correction.
     elif len(word) >= MIN_SPELL_CORRECTION_LENGTH:
         split_words, split_score  = split_to_2_words(word)    # "decision making", 45000
-        #TODO correct mistake
+        
         ed1 = edits1(word)
         without_dupl = delete_duplicate_letters(word)
         if without_dupl != word:
@@ -177,28 +173,18 @@ def main():
         line_cnt = 0
         for line in f:
             line_cnt += 1
-            if line_cnt % 10000 == 0:
+            if line_cnt % 100000 == 0:
                 print(line_cnt)
                 #pickle_mappings()
 
             freq, word = line.split()
             word = word.strip()
             freq = int(freq)
-            # if word[0] == '#' and len(word) > 1:
-            #     # TODO handle hashtags in special way e.g. hashtags with high frequency keep them as is and add them to vocab
-            #     # the others are split to normal words in the preprocess_old.py
-            #     if freq < HASH_TAG_FREQ_BOUND:  #split it to words in the next stage
-            #         continue
-            #     else:
-            #         extra_words[word] = freq
-
-
+           
             #try to match the word with word2vec
             if word in model:
                 pretrained.add(word)
             else:
-                # TODO(andrei): Keep track of more advanced statistics regarding
-                # corrections and similar modifications.
 
                 # try spelling correction
                 if freq > HIGH_FREQUENCY:   # add it without doing spelling correction
@@ -209,10 +195,7 @@ def main():
                     if freq > LOW_FREQUENCY:
                         extra_words[word] = freq
                     else:
-                        # very low frequency. if not manage to find a match
-                        # with word2vec or previous new words just discard it
-                        # TODO(andrei): Keep track of these words in case there
-                        # are still patterns we could exploit.
+                        
                         pass
 
     pickle_mappings()

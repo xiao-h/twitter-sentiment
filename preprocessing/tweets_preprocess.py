@@ -9,9 +9,9 @@ def preprocessTweets(tweet):
 
     #Convert @username to __HANDLE
     tweet = re.sub('@[^\s]+','__HANDLE',tweet)
-
-    #Replace #word with word
-    tweet = re.sub(r'#([^\s]+)', r' \1', tweet)
+#
+#     #Replace #word with word
+#     tweet = re.sub(r'#([^\s]+)', r' \1', tweet)
 
     #trim
     tweet = tweet.strip('\'"')
